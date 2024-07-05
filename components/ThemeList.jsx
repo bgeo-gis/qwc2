@@ -24,8 +24,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import Icon from './Icon';
 
-import './style/ThemeListPortal.css';
-import './style/ThemeListSidebar.css';
+import './style/ThemeList.css';
 
 class ThemeList extends React.Component {
     static propTypes = {
@@ -46,8 +45,7 @@ class ThemeList extends React.Component {
         setUserInfoFields: PropTypes.func,
         showDefaultThemeSelector: PropTypes.bool,
         showLayerAfterChangeTheme: PropTypes.bool,
-        themes: PropTypes.object,
-        className: PropTypes.string
+        themes: PropTypes.object
     };
     state = {
         expandedGroups: [],
@@ -132,22 +130,6 @@ class ThemeList extends React.Component {
                             onClick={() => this.setTheme(item)}
                             title={title}
                         >
-                            <div className="theme-item-body">
-                                {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: item.description}} />) : null}
-                                <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
-                            </div>
-                            {!item.restricted ? (
-                                <div className="theme-item-icons">
-                                    {this.props.allowAddingOtherThemeLayers ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
-                                    {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
-                                    <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
-                                    {this.props.showDefaultThemeSelector && username  ? (<Icon className={ (this.extractThemeId(this.props.defaultUrlParams) === item.id ? "icon-active" : "")} icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} />) : null }
-                                </div>
-                            ) : (
-                                <div className="theme-item-restricted-overlay">
-                                    <Icon icon="lock" />
-                                </div>
-                            )}
                             <div className="theme-item-title" title={item.title}>
                                 <span>{item.title}</span>
 
@@ -164,6 +146,29 @@ class ThemeList extends React.Component {
                                     </div>
                                 ) : null}
                             </div>) : null}
+                            <div className="theme-item-body">
+                                {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: item.description}} />) : null}
+                                <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
+                            </div>
+                            {!item.restricted ? (
+                                <div className="theme-item-icons">
+                                    {this.props.allowAddingOtherThemeLayers ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
+                                    {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
+                                    <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
+                                    {this.props.showDefaultThemeSelector && username  ? (<Icon className={ (this.extractThemeId(this.props.defaultUrlParams) === item.id ? "icon-active" : "")} icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} />) : null }
+                                </div>
+                            ) : (
+                                <div className="theme-item-restricted-overlay">
+                                    <Icon icon="lock" />
+                                </div>
+                            )}
+                            {isEmpty(matches) ? null : (
+                                <div className="theme-item-filterinfo-overlay">
+                                    {matches.map(match => (
+                                        <div key={match[0]} title={match[2]}><i>{LocaleUtils.tr(match[0])}:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
+                                    ))}
+                                </div>
+                            )}
                         </li>
                     );
                 })}
@@ -185,10 +190,9 @@ class ThemeList extends React.Component {
         return false;
     };
     render() {
-        const { className } = this.props;
         const filter = this.props.filter ? new RegExp(removeDiacritics(this.props.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         return (
-            <div className={`ThemeList ${className}`}>
+            <div className="ThemeList">
                 {this.renderThemeGroup(this.props.themes, filter)}
             </div>
         );

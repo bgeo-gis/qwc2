@@ -89,8 +89,7 @@ class ThemeSwitcher extends React.Component {
                                 collapsibleGroups={this.props.collapsibleGroups}
                                 filter={this.state.filter}
                                 showDefaultThemeSelector={this.props.showDefaultThemeSelector}
-                                showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme}
-                                className="ThemeListSidebar" />
+                                showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme}/>
                         )
                     })}
                 </SideBar>
